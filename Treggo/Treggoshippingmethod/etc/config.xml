@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <carriers>
+            <treggoshippingmethod>
+                <active>1</active>
+                <name>Treggo</name>
+                <title>Envío rápido por Treggo</title>
+                <sallowspecific>0</sallowspecific>
+                <model>Treggo\Treggoshippingmethod\Model\Carrier\Shipping</model>
+            </treggoshippingmethod>
+        </carriers>
+    </default>
+</config>

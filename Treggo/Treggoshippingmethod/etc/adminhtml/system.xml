@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="treggoshippingmethod" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Treggo</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Habilitado</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="name" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Nombre del método de envío</label>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Título del método de envío</label>
+                </field>
+                <field id="sallowspecific" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Países habilitados para el método de envío</label>
+                    <frontend_class>shipping-applicable-country</frontend_class>
+                    <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Habilitar solo para los países seleccionados</label>
+                    <source_model>Treggo\Treggoshippingmethod\Model\Countries</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,42 @@
+<!--
+/**
+* Dependency injector xml file
+*
+* @author Matías Dameno
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <type name="Magento\Sales\Api\OrderManagementInterface">
+        <plugin name="Treggo_Treggoshippingmethod_Plugin" type="Treggo\Treggoshippingmethod\Plugin\SendnotificationPlugin"/>
+    </type>
+
+    <type name="Magento\Sales\Model\ResourceModel\Order">
+        <plugin name="Treggo_Treggoshippingmethod_Aftersave_Plugin" type="Treggo\Treggoshippingmethod\Plugin\SendnotificationPluginWhenStatusChanges"/>
+    </type>
+
+    <virtualType name="TreggoCustomLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="info" xsi:type="object">Treggo\Treggoshippingmethod\Logger\Handler\InfoHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Treggo\Treggoshippingmethod\Plugin\SendnotificationPlugin">
+        <arguments>
+            <argument name="logger" xsi:type="object">TreggoCustomLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Treggo\Treggoshippingmethod\Setup\InstallData">
+        <arguments>
+            <argument name="logger" xsi:type="object">TreggoCustomLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Treggo\Treggoshippingmethod\Plugin\SendnotificationPluginWhenStatusChanges">
+        <arguments>
+            <argument name="logger" xsi:type="object">TreggoCustomLogger</argument>
+        </arguments>
+    </type>
+</config>
