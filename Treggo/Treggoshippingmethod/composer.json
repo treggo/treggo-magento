@@ -27,5 +27,14 @@
       "Treggo\\Treggoshippingmethod\\": ""
     }
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/treggo/treggo-magento"
+    }
+  ],
+  "require": {
+    "monolog/monolog": "dev-bugfix"
+  },
   "version": "1.0.0"
 }
