@@ -6,7 +6,7 @@
  * Time: 03:08
  */
 
-namespace Treggo\Treggoshippingmethod\Plugin;
+namespace Treggoapp\Treggoshippingmethod\Plugin;
 
 use Magento\Checkout\Exception;
 use Magento\Sales\Api\Data\OrderInterface;

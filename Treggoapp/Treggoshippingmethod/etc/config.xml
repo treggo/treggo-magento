@@ -8,7 +8,7 @@
                 <name>Treggo</name>
                 <title>Envío rápido por Treggo</title>
                 <sallowspecific>0</sallowspecific>
-                <model>Treggo\Treggoshippingmethod\Model\Carrier\Shipping</model>
+                <model>Treggoapp\Treggoshippingmethod\Model\Carrier\Shipping</model>
             </treggoshippingmethod>
         </carriers>
     </default>

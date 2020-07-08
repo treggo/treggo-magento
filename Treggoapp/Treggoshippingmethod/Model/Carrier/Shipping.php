@@ -6,7 +6,7 @@
  * Time: 00:38
  */
 
-namespace Treggo\Treggoshippingmethod\Model\Carrier;
+namespace Treggoapp\Treggoshippingmethod\Model\Carrier;
 
 use Magento\Checkout\Exception;
 use Magento\Quote\Model\Quote\Address\RateRequest;

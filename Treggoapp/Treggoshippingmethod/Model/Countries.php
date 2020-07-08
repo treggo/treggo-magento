@@ -6,7 +6,7 @@
  * Time: 01:05
  */
 
-namespace Treggo\Treggoshippingmethod\Model;
+namespace Treggoapp\Treggoshippingmethod\Model;
 
 use \Magento\Framework\Data\OptionSourceInterface;
 

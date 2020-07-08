@@ -22,7 +22,7 @@
                 </field>
                 <field id="specificcountry" translate="label" type="multiselect" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Habilitar solo para los países seleccionados</label>
-                    <source_model>Treggo\Treggoshippingmethod\Model\Countries</source_model>
+                    <source_model>Treggoapp\Treggoshippingmethod\Model\Countries</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
             </group>

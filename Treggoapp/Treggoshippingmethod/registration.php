@@ -8,6 +8,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
         \Magento\Framework\Component\ComponentRegistrar::MODULE,
-        'Treggo_Treggoshippingmethod',
+        'Treggoapp_Treggoshippingmethod',
         __DIR__
     );

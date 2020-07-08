@@ -1,5 +1,5 @@
 {
-  "name": "treggo/treggoshippingmethod",
+  "name": "treggoapp/treggoshippingmethod",
   "description": "Treggo shipping method extension for Magento 2",
   "require": {
     "php": "~7.1.3||~7.2.0",

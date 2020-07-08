@@ -6,7 +6,7 @@
  * Time: 16:08
  */
 
-namespace Treggo\Treggoshippingmethod\Logger\Handler;
+namespace Treggoapp\Treggoshippingmethod\Logger\Handler;
 
 use Magento\Framework\Logger\Handler\Base as BaseHandler;
 use Monolog\Logger as MonologLogger;
