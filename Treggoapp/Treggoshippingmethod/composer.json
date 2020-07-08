@@ -2,7 +2,7 @@
   "name": "treggoapp/treggoshippingmethod",
   "description": "Treggo shipping method extension for Magento 2",
   "require": {
-    "php": "~7.1.3||~7.2.0",
+    "php": "~7.1.3||~7.2.0||~7.3.0",
     "magento/framework": "102.0.*",
     "magento/module-backend": "101.0.*",
     "magento/module-catalog": "103.0.*",
@@ -12,7 +12,8 @@
     "magento/module-sales": "102.0.*",
     "magento/module-sales-rule": "101.1.*",
     "magento/module-shipping": "100.3.*",
-    "magento/module-store": "101.0.*"
+    "magento/module-store": "101.0.*",
+    "monolog/monolog": "dev-bugfix"
   },
   "type": "magento2-module",
   "license": [
@@ -24,7 +25,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "Treggo\\Treggoshippingmethod\\": ""
+      "Treggoapp\\Treggoshippingmethod\\": ""
     }
   },
   "repositories": [
@@ -33,8 +34,5 @@
       "url": "https://github.com/treggo/treggo-magento"
     }
   ],
-  "require": {
-    "monolog/monolog": "dev-bugfix"
-  },
   "version": "1.0.0"
 }
