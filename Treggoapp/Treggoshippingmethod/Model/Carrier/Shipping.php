@@ -90,15 +90,15 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
                 $data = [
                     'email' => $this->_scopeConfig->getValue('trans_email/ident_general/email',ScopeInterface::SCOPE_STORE),
                     'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
-                    'cp' => $params['address']['postcode'],
-                    'locality' => $params['address']['city']
+                    'cp' => (isset($params['address']['postcode'])) ? $params['address']['postcode'] : '',
+                    'locality' => (isset($params['address']['city'])) ? $params['address']['city'] : ''
                 ];
             } elseif (isset($params['addressInformation'])) {
                 $data = [
                     'email' => $this->_scopeConfig->getValue('trans_email/ident_general/email',ScopeInterface::SCOPE_STORE),
                     'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
-                    'cp' => $params['addressInformation']['shipping_address']['postcode'],
-                    'locality' => $params['addressInformation']['shipping_address']['city']
+                    'cp' => (isset($params['addressInformation']['shipping_address']['postcode'])) ? $params['addressInformation']['shipping_address']['postcode'] : '',
+                    'locality' => (isset($params['addressInformation']['shipping_address']['city'])) ? $params['addressInformation']['shipping_address']['city'] : ''
                 ];
             }
 
