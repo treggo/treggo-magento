@@ -25,6 +25,11 @@
                     <source_model>Treggoapp\Treggoshippingmethod\Model\Countries</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
+                <field id="allowedlabeltypes" translate="label" type="multiselect" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Tipos de etiquetas habilitadas</label>
+                    <source_model>Treggoapp\Treggoshippingmethod\Model\Labels</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
             </group>
         </section>
     </system>
