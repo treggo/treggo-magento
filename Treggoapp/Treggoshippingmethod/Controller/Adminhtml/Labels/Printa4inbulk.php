@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
-class Printa4 extends \Magento\Backend\App\Action
+class Printa4inbulk extends \Magento\Backend\App\Action
 {
     protected $resultPageFactory;
     protected $_orderModel;
@@ -29,31 +29,30 @@ class Printa4 extends \Magento\Backend\App\Action
 
     public function execute() {
         $params = $this->getRequest()->getParams();
-        $orderIncrementId = isset($params['orderIncrementId']) ? $params['orderIncrementId'] : null;
+        $orderIds = isset($params['selected']) ? $params['selected'] : null;
+        $ordersShippingAddresses = array();
 
-        if($orderIncrementId) {
-            $this->_logger->info('STARTING INDIVIDUAL A4 LABEL PRINT...');
-            $this->_logger->info('ORDER INCREMENT ID:');
-            $this->_logger->info(print_r($orderIncrementId,true));
-
-            $order = $this->_orderModel->loadByIncrementId($orderIncrementId);
-            $shippingAddressData = $order->getShippingAddress()->getData();
-
-            /* Logging shipping address and shipping method information for further debugging purposes */
-            $this->_logger->info('SHIPPING ADDRESS DATA:');
-            $this->_logger->info(print_r($shippingAddressData,true));
+        if(isset($orderIds) && count($orderIds) >= 1) {
+            $this->_logger->info('STARTING A4 LABEL PRINTING IN BULK...');
+            $this->_logger->info('ORDER INCREMENT IDs:');
+            $this->_logger->info(print_r($orderIds,true));
 
             $storeEmail = $this->_scopeConfig->getValue('trans_email/ident_general/email',ScopeInterface::SCOPE_STORE);
+
+            foreach($orderIds as $orderId) {
+                $order = $this->_orderModel->loadByAttribute('entity_id', $orderId);
+                $ordersShippingAddresses[] = $order->getShippingAddress()->getData();
+            }
 
             $data = [
                 'email' => $storeEmail,
                 'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
                 'type' => 'a4',
-                'orders' => array($shippingAddressData)
+                'orders' => $ordersShippingAddresses
             ];
 
             /* Logging DATA REQUEST in var/log/treggoshippingmethod/info.log */
-            $this->_logger->info('DATA REQUEST FOR INDIVIDUAL TAG:');
+            $this->_logger->info('DATA REQUEST FOR MASS TAG:');
             $this->_logger->info(print_r($data,true));
 
             try {
@@ -84,6 +83,11 @@ class Printa4 extends \Magento\Backend\App\Action
             } catch(Exception $e) {
                 $this->_logger->info(print_r($e->getMessage(), true));
             }
+        } else {
+            $resultRedirect = $this->resultRedirectFactory->create();
+            $resultRedirect->setPath('admin/sales/order');
+
+            return $resultRedirect;
         }
     }
 }

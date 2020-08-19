@@ -26,7 +26,7 @@ class View
                     'treggoapp-add-print-a4-label-button',
                     [
                         'label' => 'Etiqueta A4',
-                        'onclick' => 'setLocation("' . $this->_urlBuilder->getUrl('treggoprinta4label/labels/printa4',array('orderIncrementId' => $order->getIncrementId())) . '")'
+                        'onclick' => 'setLocation("' . $this->_urlBuilder->getUrl('treggoprintlabel/labels/printa4',array('orderIncrementId' => $order->getIncrementId())) . '")'
                     ]
                 );
             }
@@ -36,7 +36,7 @@ class View
                     'treggoapp-add-print-zebra-label-button',
                     [
                         'label' => 'Etiqueta Zebra',
-                        'onclick' => 'setLocation("' . $this->_urlBuilder->getUrl('treggoprinta4label/labels/printzebra',array('orderIncrementId' => $order->getIncrementId())) . '")'
+                        'onclick' => 'setLocation("' . $this->_urlBuilder->getUrl('treggoprintlabel/labels/printzebra',array('orderIncrementId' => $order->getIncrementId())) . '")'
                     ]
                 );
             }

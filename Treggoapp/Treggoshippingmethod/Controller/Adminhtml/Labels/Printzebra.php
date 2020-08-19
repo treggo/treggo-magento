@@ -31,11 +31,11 @@ class Printzebra extends \Magento\Backend\App\Action
         $params = $this->getRequest()->getParams();
         $orderIncrementId = isset($params['orderIncrementId']) ? $params['orderIncrementId'] : null;
 
-        $this->_logger->info('STARTING INDIVIDUAL ZEBRA LABEL PRINT...');
-        $this->_logger->info('ORDER INCREMENT ID:');
-        $this->_logger->info(print_r($orderIncrementId,true));
-
         if($orderIncrementId) {
+            $this->_logger->info('STARTING INDIVIDUAL ZEBRA LABEL PRINT...');
+            $this->_logger->info('ORDER INCREMENT ID:');
+            $this->_logger->info(print_r($orderIncrementId,true));
+
             $order = $this->_orderModel->loadByIncrementId($orderIncrementId);
             $shippingAddressData = $order->getShippingAddress()->getData();
 

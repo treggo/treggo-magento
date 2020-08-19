@@ -2,7 +2,7 @@
 
 <config xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="admin">
-        <route id="treggoprinta4label" frontName="treggoprinta4label">
+        <route id="treggoprintlabel" frontName="treggoprintlabel">
             <module name="Treggoapp_Treggoshippingmethod" before="Magento_Backend"/>
         </route>
     </router>

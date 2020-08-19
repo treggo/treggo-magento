@@ -46,6 +46,24 @@
         </arguments>
     </type>
 
+    <type name="Treggoapp\Treggoshippingmethod\Controller\Adminhtml\Labels\Printzebra">
+        <arguments>
+            <argument name="logger" xsi:type="object">TreggoappCustomLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Treggoapp\Treggoshippingmethod\Controller\Adminhtml\Labels\Printa4inbulk">
+        <arguments>
+            <argument name="logger" xsi:type="object">TreggoappCustomLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Treggoapp\Treggoshippingmethod\Controller\Adminhtml\Labels\Printzebrainbulk">
+        <arguments>
+            <argument name="logger" xsi:type="object">TreggoappCustomLogger</argument>
+        </arguments>
+    </type>
+
     <type name="Magento\Sales\Block\Adminhtml\Order\View">
         <plugin name="Treggoapp_Treggoshippingmethod_Addprintlabelbuttons_Plugin" type="Treggoapp\Treggoshippingmethod\Plugin\Block\Adminhtml\Order\View"/>
     </type>
