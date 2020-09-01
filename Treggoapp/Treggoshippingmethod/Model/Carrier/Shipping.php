@@ -186,6 +186,12 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
             return false;
         }
 
+        $multiplierValue = (float)$this->_scopeConfig->getValue('carriers/treggoshippingmethod/multiplier',ScopeInterface::SCOPE_STORE);
+
+        if(isset($multiplierValue) && $multiplierValue !== '') {
+            $amount = $amount * $multiplierValue;
+        }
+
         $method->setPrice($amount);
         $method->setCost($amount);
 

@@ -5,6 +5,7 @@
         <section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1" showInStore="1">
             <group id="treggoshippingmethod" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Treggo</label>
+                <comment>Ya instalaste el plugin de Treggo para esta tienda.Para completar el proceso de alta, podés acceder desde el correo que enviamos a la casilla configurada en la tienda y terminar el proceso de registro. No podrás utilizar este método de envío hasta que haya un acuerdo comercial sobre las coberturas.</comment>
                 <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
                     <label>Habilitado</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -29,6 +30,10 @@
                     <label>Tipos de etiquetas habilitadas</label>
                     <source_model>Treggoapp\Treggoshippingmethod\Model\Labels</source_model>
                     <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="multiplier" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Multiplicador</label>
+                    <comment>Ejemplos de uso del multiplicador: 0.5 = 50% del total | 1.21 = recargo del 21% | 2 = se cobra el doble.</comment>
                 </field>
             </group>
         </section>
