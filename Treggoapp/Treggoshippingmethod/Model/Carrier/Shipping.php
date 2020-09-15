@@ -149,7 +149,7 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
                 $this->_logger->info(print_r($e->getMessage(),true));
             }
         } else {
-            if($_COOKIE['treggo_shipping_module_last_price']) {
+            if(isset($_COOKIE['treggo_shipping_module_last_price'])) {
                 $shippingPrice = $this->getFinalPriceWithHandlingFee($_COOKIE['treggo_shipping_module_last_price']);
             } else {
                 return null;
