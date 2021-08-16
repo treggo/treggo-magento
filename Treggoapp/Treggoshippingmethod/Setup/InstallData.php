@@ -23,22 +23,24 @@ class InstallData implements InstallDataInterface
 
     protected $_scopeConfig;
 
-    public function __construct(PsrLoggerInterface $logger,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        ScopeConfigInterface $scopeConfig
-    ) {
+    public function __construct(PsrLoggerInterface                         $logger,
+                                \Magento\Store\Model\StoreManagerInterface $storeManager,
+                                ScopeConfigInterface                       $scopeConfig
+    )
+    {
         $this->_logger = $logger;
         $this->_storeManager = $storeManager;
         $this->_scopeConfig = $scopeConfig;
     }
 
-    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context) {
+    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    {
         /* Using scopeConfig interface and storeManager object in order to get store information */
-        $generalContactStoreEmail = $this->_scopeConfig->getValue('trans_email/ident_general/email',ScopeInterface::SCOPE_STORE);
-        $generalContactStoreName = $this->_scopeConfig->getValue('trans_email/ident_general/name',ScopeInterface::SCOPE_STORE);
-        $storeInformationTelephone = $this->_scopeConfig->getValue('general/store_information/phone',ScopeInterface::SCOPE_STORE);
+        $generalContactStoreEmail = $this->_scopeConfig->getValue('trans_email/ident_general/email', ScopeInterface::SCOPE_STORE);
+        $generalContactStoreName = $this->_scopeConfig->getValue('trans_email/ident_general/name', ScopeInterface::SCOPE_STORE);
+        $storeInformationTelephone = $this->_scopeConfig->getValue('general/store_information/phone', ScopeInterface::SCOPE_STORE);
         $storeForSendingSignUpRequest = [
-            'nombre' => $this->_scopeConfig->getValue('general/store_information/name',ScopeInterface::SCOPE_STORE),
+            'nombre' => $this->_scopeConfig->getValue('general/store_information/name', ScopeInterface::SCOPE_STORE),
             'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
             'id' => $this->_storeManager->getStore()->getId()
         ];
@@ -53,7 +55,7 @@ class InstallData implements InstallDataInterface
 
         /* Logging DATA REQUEST in var/log/treggoshippingmethod/info.log */
         $this->_logger->info('DATA REQUEST FOR SIGN UP:');
-        $this->_logger->info(print_r($data,true));
+        $this->_logger->info(print_r($data, true));
 
         try {
             /* Initiating CURL library instance */
