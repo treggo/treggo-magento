@@ -8,6 +8,7 @@
                 <name>Treggo</name>
                 <title>Envío rápido por Treggo</title>
                 <sallowspecific>0</sallowspecific>
+                <allowedlabeltypes>a4,zebra</allowedlabeltypes>
                 <model>Treggoapp\Treggoshippingmethod\Model\Carrier\Shipping</model>
             </treggoshippingmethod>
         </carriers>

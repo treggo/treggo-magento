@@ -8,13 +8,21 @@
 
 namespace Treggoapp\Treggoshippingmethod\Model\Carrier;
 
-use Magento\Checkout\Exception;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
+use Magento\Quote\Model\Quote\Address\RateResult\Method;
+use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
+use Magento\Shipping\Model\Carrier\AbstractCarrier;
+use Magento\Shipping\Model\Carrier\CarrierInterface;
 use Magento\Shipping\Model\Rate\Result;
+use Magento\Shipping\Model\Rate\ResultFactory;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
-
-class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implements \Magento\Shipping\Model\Carrier\CarrierInterface
+class Shipping extends AbstractCarrier implements CarrierInterface
 {
     /**
      * @var string
@@ -22,12 +30,12 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
     protected $_code = 'treggoshippingmethod';
 
     /**
-     * @var \Magento\Shipping\Model\Rate\ResultFactory
+     * @var ResultFactory
      */
     protected $_rateResultFactory;
 
     /**
-     * @var \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory
+     * @var MethodFactory
      */
     protected $_rateMethodFactory;
 
@@ -38,23 +46,24 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
     /**
      * Shipping constructor.
      *
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface          $scopeConfig
-     * @param \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory  $rateErrorFactory
-     * @param \Psr\Log\LoggerInterface                                    $logger
-     * @param \Magento\Shipping\Model\Rate\ResultFactory                  $rateResultFactory
-     * @param \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory $rateMethodFactory
-     * @param \Magento\Store\Model\StoreManagerInterface                  $rateResultFactory
-     * @param array                                                       $data
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ErrorFactory $rateErrorFactory
+     * @param LoggerInterface $logger
+     * @param ResultFactory $rateResultFactory
+     * @param MethodFactory $rateMethodFactory
+     * @param StoreManagerInterface $storeManager
+     * @param array $data
      */
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory $rateErrorFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Shipping\Model\Rate\ResultFactory $rateResultFactory,
-        \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory $rateMethodFactory,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        array $data = []
-    ) {
+        ScopeConfigInterface  $scopeConfig,
+        ErrorFactory          $rateErrorFactory,
+        LoggerInterface       $logger,
+        ResultFactory         $rateResultFactory,
+        MethodFactory         $rateMethodFactory,
+        StoreManagerInterface $storeManager,
+        array                 $data = []
+    )
+    {
         $this->_rateResultFactory = $rateResultFactory;
         $this->_rateMethodFactory = $rateMethodFactory;
         $this->_logger = $logger;
@@ -68,43 +77,35 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
      * get allowed methods
      * @return array
      */
-    public function getAllowedMethods() {
+    public function getAllowedMethods()
+    {
         return [$this->_code => $this->getConfigData('name')];
     }
 
     /**
      * @return float|null
+     * @throws NoSuchEntityException
      */
-    private function getShippingPrice() {
-        /* Getting post parameters from this model class */
-        $requestBody = file_get_contents('php://input');
-        $params = json_decode($requestBody, true);
+    private function getShippingPrice(string $city = null, string $postcode = null)
+    {
+        $shippingPrice = null;
 
         /* Logging POST parameters coming from the front-end */
-        $this->_logger->info('PARAMS:');
-        $this->_logger->info(print_r($params,true));
+        $this->_logger->info('CITY: ' . $city);
+        $this->_logger->info('POSTCODE: ' . $postcode);
 
         /* Building $data array in order to use for sending TREGGO middleware rates request */
-        if(isset($params['address']) || isset($params['addressInformation'])) {
-            if (isset($params['address'])) {
-                $data = [
-                    'email' => $this->_scopeConfig->getValue('trans_email/ident_general/email',ScopeInterface::SCOPE_STORE),
-                    'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
-                    'cp' => (isset($params['address']['postcode'])) ? $params['address']['postcode'] : '',
-                    'locality' => (isset($params['address']['city'])) ? $params['address']['city'] : ''
-                ];
-            } elseif (isset($params['addressInformation'])) {
-                $data = [
-                    'email' => $this->_scopeConfig->getValue('trans_email/ident_general/email',ScopeInterface::SCOPE_STORE),
-                    'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
-                    'cp' => (isset($params['addressInformation']['shipping_address']['postcode'])) ? $params['addressInformation']['shipping_address']['postcode'] : '',
-                    'locality' => (isset($params['addressInformation']['shipping_address']['city'])) ? $params['addressInformation']['shipping_address']['city'] : ''
-                ];
-            }
+        if (!empty($city) || !empty($postcode)) {
+            $data = [
+                'email' => $this->_scopeConfig->getValue('trans_email/ident_general/email', ScopeInterface::SCOPE_STORE),
+                'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
+                'cp' => !empty($postcode) ? $postcode : '',
+                'locality' => !empty($city) ? $city : ''
+            ];
 
             /* Logging DATA REQUEST in var/log/shipping.log */
             $this->_logger->info('DATA REQUEST:');
-            $this->_logger->info(print_r($data,true));
+            $this->_logger->info(print_r($data, true));
 
             try {
                 /* Initiating CURL library instance */
@@ -133,23 +134,23 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
 
 
                 /* If we got a price then we have shipping availability, if not, then we should hide the shipping method */
-                if(isset($result->total_price) && $result->total_price !== null) {
+                if (isset($result->total_price) && $result->total_price !== null) {
                     $shippingPrice = $this->getFinalPriceWithHandlingFee($result->total_price);
 
                     /* Setting cookie in order to recover the last price in the final request */
                     $cookieName = 'treggo_shipping_module_last_price';
                     $cookieValue = $shippingPrice;
-                    setcookie($cookieName, $cookieValue, time()+3600);
-                } elseif(isset($result->message) && $result->message === 'El usuario no tiene coberturas seteadas') {
-                    setcookie('treggo_shipping_module_last_price', null, time()+3600);
+                    setcookie($cookieName, $cookieValue, time() + 3600);
+                } elseif (isset($result->message) && $result->message === 'El usuario no tiene coberturas seteadas') {
+                    setcookie('treggo_shipping_module_last_price', null, time() + 3600);
 
                     return null;
                 }
-            } catch(Exception $e) {
-                $this->_logger->info(print_r($e->getMessage(),true));
+            } catch (\Exception $e) {
+                $this->_logger->info(print_r($e->getMessage(), true));
             }
         } else {
-            if(isset($_COOKIE['treggo_shipping_module_last_price'])) {
+            if (isset($_COOKIE['treggo_shipping_module_last_price'])) {
                 $shippingPrice = $this->getFinalPriceWithHandlingFee($_COOKIE['treggo_shipping_module_last_price']);
             } else {
                 return null;
@@ -162,16 +163,18 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
     /**
      * @param RateRequest $request
      * @return bool|Result
+     * @throws NoSuchEntityException
      */
-    public function collectRates(RateRequest $request) {
+    public function collectRates(RateRequest $request)
+    {
         if (!$this->getConfigFlag('active')) {
             return false;
         }
 
-        /** @var \Magento\Shipping\Model\Rate\Result $result */
+        /** @var Result $result */
         $result = $this->_rateResultFactory->create();
 
-        /** @var \Magento\Quote\Model\Quote\Address\RateResult\Method $method */
+        /** @var Method $method */
         $method = $this->_rateMethodFactory->create();
 
         $method->setCarrier($this->_code);
@@ -180,15 +183,18 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
         $method->setMethod($this->_code);
         $method->setMethodTitle($this->getConfigData('name'));
 
-        $amount = $this->getShippingPrice();
+        $city = $request->getDestCity();
+        $postcode = $request->getDestPostcode();
 
-        if($amount === null) {
+        $amount = $this->getShippingPrice($city, $postcode);
+
+        if ($amount === null) {
             return false;
         }
 
-        $multiplierValue = (float)$this->_scopeConfig->getValue('carriers/treggoshippingmethod/multiplier',ScopeInterface::SCOPE_STORE);
+        $multiplierValue = (float)$this->_scopeConfig->getValue('carriers/treggoshippingmethod/multiplier', ScopeInterface::SCOPE_STORE);
 
-        if(isset($multiplierValue) && $multiplierValue !== '') {
+        if (!empty($multiplierValue)) {
             $amount = $amount * $multiplierValue;
         }
 
