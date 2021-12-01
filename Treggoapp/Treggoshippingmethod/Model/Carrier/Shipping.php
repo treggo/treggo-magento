@@ -8,6 +8,7 @@
 
 namespace Treggoapp\Treggoshippingmethod\Model\Carrier;
 
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote\Address\RateRequest;
@@ -44,6 +45,11 @@ class Shipping extends AbstractCarrier implements CarrierInterface
     protected $_storeManager;
 
     /**
+     * @var Session
+     */
+    protected $_checkoutSession;
+
+    /**
      * Shipping constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -52,6 +58,7 @@ class Shipping extends AbstractCarrier implements CarrierInterface
      * @param ResultFactory $rateResultFactory
      * @param MethodFactory $rateMethodFactory
      * @param StoreManagerInterface $storeManager
+     * @param Session $checkoutSession
      * @param array $data
      */
     public function __construct(
@@ -61,6 +68,7 @@ class Shipping extends AbstractCarrier implements CarrierInterface
         ResultFactory         $rateResultFactory,
         MethodFactory         $rateMethodFactory,
         StoreManagerInterface $storeManager,
+        Session               $checkoutSession,
         array                 $data = []
     )
     {
@@ -69,6 +77,8 @@ class Shipping extends AbstractCarrier implements CarrierInterface
         $this->_logger = $logger;
         $this->_storeManager = $storeManager;
         $this->_scopeConfig = $scopeConfig;
+        $this->_checkoutSession = $checkoutSession;
+
 
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
     }
@@ -138,11 +148,13 @@ class Shipping extends AbstractCarrier implements CarrierInterface
                     $shippingPrice = $this->getFinalPriceWithHandlingFee($result->total_price);
 
                     /* Setting cookie in order to recover the last price in the final request */
-                    $cookieName = 'treggo_shipping_module_last_price';
-                    $cookieValue = $shippingPrice;
-                    setcookie($cookieName, $cookieValue, time() + 3600);
+//                    $cookieName = 'treggo_shipping_module_last_price';
+//                    $cookieValue = $shippingPrice;
+//                    setcookie($cookieName, $cookieValue, time() + 3600);
+                    $this->_checkoutSession->setTreggoShippingModuleLastPrice($shippingPrice);
                 } elseif (isset($result->message) && $result->message === 'El usuario no tiene coberturas seteadas') {
-                    setcookie('treggo_shipping_module_last_price', null, time() + 3600);
+//                    setcookie('treggo_shipping_module_last_price', null, time() + 3600);
+                    $this->_checkoutSession->setTreggoShippingModuleLastPrice(null);
 
                     return null;
                 }
@@ -150,8 +162,9 @@ class Shipping extends AbstractCarrier implements CarrierInterface
                 $this->_logger->info(print_r($e->getMessage(), true));
             }
         } else {
-            if (isset($_COOKIE['treggo_shipping_module_last_price'])) {
-                $shippingPrice = $this->getFinalPriceWithHandlingFee($_COOKIE['treggo_shipping_module_last_price']);
+            $treggoCookieprice = $this->_checkoutSession->getTreggoShippingModuleLastPrice();
+            if (isset($treggoCookieprice)) {
+                $shippingPrice = $this->getFinalPriceWithHandlingFee($treggoCookieprice);
             } else {
                 return null;
             }
@@ -196,6 +209,10 @@ class Shipping extends AbstractCarrier implements CarrierInterface
 
         if (!empty($multiplierValue)) {
             $amount = $amount * $multiplierValue;
+        }
+
+        if($request->getFreeShipping()){
+            $amount = 0;
         }
 
         $method->setPrice($amount);
