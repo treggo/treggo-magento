@@ -54,11 +54,12 @@ class SendNotificationHelper extends AbstractHelper
         $this->_logger->info(print_r($order->getShippingAddress()->getData(), true));
 
         $storeEmail = $this->scopeConfig->getValue('trans_email/ident_general/email', ScopeInterface::SCOPE_STORE);
-
+        $orderAddressData = $order->getShippingAddress()->getData();
+        $orderAddressData['entity_id'] = $order->getIncrementId();
         $data = [
             'email' => $storeEmail,
             'dominio' => $this->_storeManager->getStore()->getBaseUrl(),
-            'order' => $order->getShippingAddress()->getData()
+            'order' => $orderAddressData
         ];
 
         $data['order']['status'] = $order->getStatus();
